@@ -28,8 +28,10 @@ public class AuthHttpServerHandler extends SimpleChannelInboundHandler<FullHttpR
     private String websocketPath;
 
 
+
+
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
+    protected void messageReceived(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
         RequestParser requestParser = new RequestParser(fullHttpRequest);
         Map<String, String> parse = requestParser.parse();
 
@@ -39,7 +41,4 @@ public class AuthHttpServerHandler extends SimpleChannelInboundHandler<FullHttpR
         fullHttpResponse.headers().add("content-type","text/plan;charset=utf-8");
         channelHandlerContext.writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
     }
-
-
-
 }
