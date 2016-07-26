@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:property-placeholder ignore-unresolvable="true" location="classpath:config/resource.properties" />
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config/resource.properties"/>
+    <context:component-scan base-package="cc.moondust.authserver.repository">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
         <property name="driverClass" value="${sql_db_driver}"/>
         <property name="user" value="${sql_db_user}"/>
@@ -16,21 +19,22 @@
 
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-        <!-- 自动扫描mapping.xml文件 -->
-        <property name="mapperLocations" value="classpath:cc/moondust/authserver/repository/*.xml"></property>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="cc.moondust.authserver.entitys"/>
     </bean>
 
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
-        <property name="basePackage" value="cc.moondust.authserver.repository" />
+        <property name="basePackage" value="cc.moondust.authserver.repository"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 </beans>
