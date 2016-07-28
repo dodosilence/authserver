@@ -1,6 +1,7 @@
 package cc.moondust.authserver.controller;
 
 import cc.moondust.authserver.controller.model.PageModel;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 
@@ -15,7 +16,7 @@ public class AccessTokenController extends AbstractController {
 
 
     @Override
-    protected PageModel service(String uri, Map<String, String> params, HttpMethod method) {
+    protected PageModel service(String uri, Map<String, String> params, HttpMethod method, HttpHeaders headers) {
 
         return null;
     }
