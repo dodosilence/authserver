@@ -22,7 +22,7 @@ public class DispacherHandler {
 
 
 
-    public void dispacher(FullHttpRequest fullHttpRequest, ChannelHandlerContext channelHandlerContext) throws Exception {
+    public void dispacher(FullHttpRequest fullHttpRequest, ChannelHandlerContext channelHandlerContext) throws ResourceNotFoundException {
         if (fullHttpRequest.uri().startsWith("/auth")) {
             authorizeController.doService(fullHttpRequest,channelHandlerContext);
         } else if (fullHttpRequest.uri().startsWith("/token")) {

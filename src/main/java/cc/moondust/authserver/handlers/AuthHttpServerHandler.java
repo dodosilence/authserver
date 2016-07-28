@@ -1,7 +1,9 @@
 package cc.moondust.authserver.handlers;
 
 import cc.moondust.authserver.controller.AuthorizeController;
+import cc.moondust.authserver.exception.ResourceNotFoundException;
 import cc.moondust.authserver.util.RequestParser;
+import cc.moondust.authserver.util.ResponseParser;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -34,22 +36,18 @@ public class AuthHttpServerHandler extends SimpleChannelInboundHandler<FullHttpR
     DispacherHandler dispacherHandler;
 
 
-
-
     @Override
     protected void messageReceived(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) {
-        if (HttpMethod.POST.equals(fullHttpRequest.method())) {//处理post请求
+        if (HttpMethod.GET.equals(fullHttpRequest.method())) {//处理post请求
             try {
                 dispacherHandler.dispacher(fullHttpRequest, channelHandlerContext);
-            } catch (Exception e) {
-                sendMethodNotSupportHttpResponse(channelHandlerContext, fullHttpRequest.method().toString());
+            } catch (ResourceNotFoundException e) {
+                ResponseParser.sendStaticPage(channelHandlerContext,"404");
             }
         } else {
             sendMethodNotSupportHttpResponse(channelHandlerContext, fullHttpRequest.method().toString());
         }
     }
-
-
     private void sendMethodNotSupportHttpResponse(ChannelHandlerContext channelHandlerContext, String method) {
         StringBuffer res = new StringBuffer("<!DOCTYPE html>\n")
                 .append("<html lang=\"zh\">\n")
@@ -67,8 +65,6 @@ public class AuthHttpServerHandler extends SimpleChannelInboundHandler<FullHttpR
         FullHttpResponse fullHttpResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, byteBuf);
         fullHttpResponse.headers().add("content-type", "text/html;charset=utf-8");
         channelHandlerContext.writeAndFlush(fullHttpResponse).addListener(ChannelFutureListener.CLOSE);
-        byteBuf.retain();
     }
-
 
 }

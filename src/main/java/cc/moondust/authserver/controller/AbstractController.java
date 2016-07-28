@@ -1,11 +1,16 @@
 package cc.moondust.authserver.controller;
 
 import cc.moondust.authserver.controller.model.PageModel;
+import cc.moondust.authserver.util.HtmlFileReader;
 import cc.moondust.authserver.util.RequestParser;
+import cc.moondust.authserver.util.ResponseParser;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.*;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -24,7 +29,8 @@ public abstract class AbstractController {
 
 
     public void parseModel(ChannelHandlerContext ctx, PageModel model) {
-
-
+        if (model==null){
+            ResponseParser.sendStaticPage(ctx,"404");
+        }
     }
 }
