@@ -12,6 +12,7 @@
             </list>
         </property>
     </bean>
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:config/resource.properties"/>
 
     <context:component-scan base-package="cc.moondust.authserver.netty">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
@@ -22,6 +23,17 @@
     </context:component-scan>
     <context:annotation-config/>
 
+    <context:component-scan base-package="cc.moondust.authserver.controller">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <context:annotation-config/>
+
+    <context:component-scan base-package="cc.moondust.authserver.service">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+    <context:annotation-config/>
+
     <import resource="spring-database.xml"/>
+    <import resource="spring-thread.xml"/>
 
 </beans>

@@ -1,4 +1,4 @@
-package cc.moondust.authserver.handlers;
+package cc.moondust.authserver.util;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -17,23 +17,13 @@ import java.util.Map;
  * Created by whf on 12/23/15.
  */
 public class RequestParser {
-    private FullHttpRequest fullReq;
-
-    /**
-     * 构造一个解析器
-     * @param req
-     */
-    public RequestParser(FullHttpRequest req) {
-        this.fullReq = req;
-    }
-
     /**
      * 解析请求参数
      * @return 包含所有请求参数的键值对, 如果没有参数, 则返回空Map
      *
      * @throws IOException
      */
-    public Map<String, String> parse() throws  IOException {
+    public static Map<String, String> parse(FullHttpRequest fullReq) {
         HttpMethod method = fullReq.method();
 
         Map<String, String> parmMap = new HashMap<>();
@@ -55,7 +45,11 @@ public class RequestParser {
             for (InterfaceHttpData parm : parmList) {
 
                 Attribute data = (Attribute) parm;
-                parmMap.put(data.getName(), data.getValue());
+                try {
+                    parmMap.put(data.getName(), data.getValue());
+                } catch (IOException e) {
+                    parmMap.put(data.getName(),null);
+                }
             }
 
         } else {
